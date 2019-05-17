@@ -43,20 +43,36 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
     CSV::Row.new(headers, data)
   end
 
-  let(:opportunity) { described_class.new(row) }
+  describe 'new' do
+    let(:opportunity) { described_class.new(row) }
 
-  it 'fetches data from the marketplace' do
-    scraped_opportunity = double(MarketplaceOpportunityScraper::Opportunity)
-    expect(MarketplaceOpportunityScraper::Opportunity)
-      .to(receive(:find).with(row[0]).once { scraped_opportunity })
+    it 'fetches data from the marketplace' do
+      scraped_opportunity = double(MarketplaceOpportunityScraper::Opportunity)
+      expect(MarketplaceOpportunityScraper::Opportunity)
+        .to(receive(:find).with(row[0]).once { scraped_opportunity })
 
-    expect(scraped_opportunity).to receive(:description)
-    expect(scraped_opportunity).to receive(:budget)
+      expect(scraped_opportunity).to receive(:description)
+      expect(scraped_opportunity).to receive(:budget)
 
-    opportunity.to_a
+      opportunity.to_a
+    end
+
+    it 'combines data from two sources' do
+      expect(opportunity.to_a.count).to eq(data.count + 2)
+    end
   end
 
-  it 'combines data from two sources' do
-    expect(opportunity.to_a.count).to eq(data.count + 2)
+  describe 'all' do
+    let(:opportunities) { described_class.all }
+    let(:csv) { double(data: [row, row, row]) }
+
+    before do
+      expect(HistoricMarketplaceData::CSV).to receive(:new) { csv }
+    end
+
+    it 'gets all opportunities' do
+      expect(described_class).to receive(:new).with(row).exactly(3).times
+      opportunities
+    end
   end
 end

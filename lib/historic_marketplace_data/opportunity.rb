@@ -2,6 +2,12 @@
 
 module HistoricMarketplaceData
   class Opportunity
+    def self.all
+      CSV.new.data.each do |row|
+        new(row)
+      end
+    end
+
     def initialize(row)
       @row = row
     end
