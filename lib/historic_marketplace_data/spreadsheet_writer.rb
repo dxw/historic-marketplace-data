@@ -13,12 +13,16 @@ module HistoricMarketplaceData
     def append_row(row, last_pos = num_rows, save = true)
       pos = last_pos + 1
       row.each_with_index do |cell, index|
-        worksheet[pos, index + 1] = cell
+        worksheet[pos, index + 1] = encode_cell(cell)
       end
       worksheet.save if save
     end
 
     private
+
+    def encode_cell(cell)
+      cell.to_s.dup.force_encoding('UTF-8')
+    end
 
     def num_rows
       worksheet.num_rows

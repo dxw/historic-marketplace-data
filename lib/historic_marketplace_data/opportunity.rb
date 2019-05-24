@@ -3,7 +3,7 @@
 module HistoricMarketplaceData
   class Opportunity
     def self.all
-      CSV.new.data.each do |row|
+      CSV.new.data.map do |row|
         new(row)
       end
     end
