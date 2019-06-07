@@ -10,7 +10,7 @@ require 'google_drive'
 
 require 'historic_marketplace_data/csv'
 require 'historic_marketplace_data/opportunity'
-require 'historic_marketplace_data/spreadsheet_writer'
+require 'historic_marketplace_data/spreadsheet'
 
 module HistoricMarketplaceData
 end

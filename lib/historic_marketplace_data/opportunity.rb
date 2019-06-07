@@ -10,7 +10,7 @@ module HistoricMarketplaceData
 
     def self.add_all_to_spreadsheet
       outcomes = all.map(&:to_a)
-      SpreadsheetWriter.new.append_rows(outcomes)
+      Spreadsheet.new.append_rows(outcomes)
     end
 
     def initialize(row)

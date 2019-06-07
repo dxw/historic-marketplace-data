@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe HistoricMarketplaceData::SpreadsheetWriter do
+RSpec.describe HistoricMarketplaceData::Spreadsheet do
   let(:session) { double(:session) }
   let(:worksheet) { double(num_rows: 0, save: nil) }
   let(:spreadsheet) { double(worksheets: [worksheet]) }

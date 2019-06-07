@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module HistoricMarketplaceData
-  class SpreadsheetWriter
+  class Spreadsheet
     def append_rows(rows)
       pos = num_rows
       rows.each_with_index do |row, i|
