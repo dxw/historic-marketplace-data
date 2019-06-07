@@ -64,20 +64,6 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
 
   describe 'all' do
     let(:opportunities) { described_class.all }
-    let(:csv) { double(data: [row, row, row]) }
-
-    before do
-      expect(HistoricMarketplaceData::CSV).to receive(:new) { csv }
-    end
-
-    it 'gets all opportunities' do
-      expect(described_class).to receive(:new).with(row).exactly(3).times
-      opportunities
-    end
-  end
-
-  describe 'outcomes' do
-    let(:outcomes) { described_class.outcomes }
 
     let(:specialist_row) do
       specialist_data = data.dup
@@ -85,11 +71,15 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
       CSV::Row.new(headers, specialist_data)
     end
 
-    let(:csv) { [row, specialist_row, row] }
+    let(:csv) { double(data: [row, row, specialist_row, row, specialist_row]) }
 
-    it 'filters opportunities' do
-      expect(described_class).to receive(:all) { csv }
-      expect(outcomes.count).to eq(2)
+    before do
+      expect(HistoricMarketplaceData::CSV).to receive(:new) { csv }
+    end
+
+    it 'gets all digital outcomes' do
+      expect(described_class).to receive(:new).with(row).exactly(3).times
+      opportunities
     end
   end
 
@@ -98,7 +88,7 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
     let(:writer) { double(:writer) }
 
     before do
-      expect(described_class).to receive(:outcomes) { opportunities }
+      expect(described_class).to receive(:all) { opportunities }
     end
 
     it 'sends all to spreadsheet' do
