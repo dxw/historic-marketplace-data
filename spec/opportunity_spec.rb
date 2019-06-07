@@ -75,4 +75,21 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
       opportunities
     end
   end
+
+  describe 'outcomes' do
+    let(:outcomes) { described_class.outcomes }
+
+    let(:specialist_row) do
+      specialist_data = data.dup
+      specialist_data[4] = 'digital-specialists'
+      CSV::Row.new(headers, specialist_data)
+    end
+
+    let(:csv) { [row, specialist_row, row] }
+
+    it 'filters opportunities' do
+      expect(described_class).to receive(:all) { csv }
+      expect(outcomes.count).to eq(2)
+    end
+  end
 end

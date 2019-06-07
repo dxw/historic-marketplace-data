@@ -8,6 +8,9 @@ module HistoricMarketplaceData
       end
     end
 
+    def self.outcomes
+      all.select { |r| r['Category'] == 'digital-outcomes' }
+    end
     def initialize(row)
       @row = row
     end
