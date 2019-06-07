@@ -92,4 +92,20 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
       expect(outcomes.count).to eq(2)
     end
   end
+
+  describe 'add_all_to_spreadsheet' do
+    let(:opportunities) { Array.new(3, double(:opportunity, to_a: [])) }
+    let(:writer) { double(:writer) }
+
+    before do
+      expect(described_class).to receive(:outcomes) { opportunities }
+    end
+
+    it 'sends all to spreadsheet' do
+      expect(HistoricMarketplaceData::SpreadsheetWriter).to receive(:new) { writer }
+      expect(writer).to receive(:append_rows).with(Array.new(3, []))
+
+      described_class.add_all_to_spreadsheet
+    end
+  end
 end

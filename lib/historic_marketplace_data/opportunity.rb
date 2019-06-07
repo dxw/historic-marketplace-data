@@ -11,6 +11,12 @@ module HistoricMarketplaceData
     def self.outcomes
       all.select { |r| r['Category'] == 'digital-outcomes' }
     end
+
+    def self.add_all_to_spreadsheet
+      opportunities = outcomes.map(&:to_a)
+      SpreadsheetWriter.new.append_rows(opportunities)
+    end
+
     def initialize(row)
       @row = row
     end
