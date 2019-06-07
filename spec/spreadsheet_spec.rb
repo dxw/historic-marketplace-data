@@ -4,7 +4,8 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
   let(:session) { double(:session) }
   let(:worksheet) { double(num_rows: 0, save: nil) }
   let(:spreadsheet) { double(worksheets: [worksheet]) }
-  let(:writer) { described_class.new }
+
+  subject { described_class.new }
 
   describe 'append_row' do
     let(:data) { %w[foo bar] }
@@ -13,7 +14,7 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
       expect(GoogleDrive::Session).to receive(:from_service_account_key) { session }
       expect(session).to receive(:spreadsheet_by_key) { spreadsheet }
 
-      writer.append_row([])
+      subject.append_row([])
     end
 
     it 'writes a row' do
@@ -24,7 +25,7 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
       expect(worksheet).to receive(:[]=).with(1, 2, data[1])
       expect(worksheet).to receive(:save).once
 
-      writer.append_row(data)
+      subject.append_row(data)
     end
 
     context 'when there are already rows present' do
@@ -38,7 +39,7 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
         expect(worksheet).to receive(:[]=).with(101, 2, data[1])
         expect(worksheet).to receive(:save).once
 
-        writer.append_row(data)
+        subject.append_row(data)
       end
     end
   end
@@ -50,7 +51,7 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
       expect(GoogleDrive::Session).to receive(:from_service_account_key) { session }
       expect(session).to receive(:spreadsheet_by_key) { spreadsheet }
 
-      writer.append_rows([[], []])
+      subject.append_rows([[], []])
     end
 
     it 'writes the rows' do
@@ -65,7 +66,7 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
       expect(worksheet).to receive(:[]=).with(3, 2, data[2][1])
       expect(worksheet).to receive(:save).once
 
-      writer.append_rows(data)
+      subject.append_rows(data)
     end
 
     context 'when there are already rows present' do
@@ -83,7 +84,29 @@ RSpec.describe HistoricMarketplaceData::Spreadsheet do
         expect(worksheet).to receive(:[]=).with(103, 2, data[2][1])
         expect(worksheet).to receive(:save).once
 
-        writer.append_rows(data)
+        subject.append_rows(data)
+      end
+    end
+  end
+
+  context 'reading rows' do
+    let(:rows) { [[1, 2, 3], [3, 4, 5]] }
+    let(:worksheet) { double(num_rows: 0, save: nil, rows: rows) }
+
+    before do
+      allow(GoogleDrive::Session).to receive(:from_service_account_key) { session }
+      allow(session).to receive(:spreadsheet_by_key) { spreadsheet }
+    end
+
+    describe 'rows' do
+      it 'returns rows' do
+        expect(subject.rows).to eq(rows)
+      end
+    end
+
+    describe 'ids' do
+      it 'returns the first column from each row' do
+        expect(subject.ids).to eq([1, 3])
       end
     end
   end

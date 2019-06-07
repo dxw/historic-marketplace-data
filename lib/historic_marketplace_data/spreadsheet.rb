@@ -18,6 +18,14 @@ module HistoricMarketplaceData
       worksheet.save if save
     end
 
+    def rows
+      worksheet.rows
+    end
+
+    def ids
+      worksheet.rows.map { |r| r[0] }
+    end
+
     private
 
     def encode_cell(cell)
