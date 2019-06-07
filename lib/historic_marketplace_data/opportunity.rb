@@ -2,15 +2,38 @@
 
 module HistoricMarketplaceData
   class Opportunity
-    def self.all
-      CSV.new.data.map do |row|
-        new(row) if row['Category'] == 'digital-outcomes'
-      end.reject(&:nil?)
-    end
+    class << self
+      def all
+        data.map { |row| new(row) }
+      end
 
-    def self.add_all_to_spreadsheet
-      outcomes = all.map(&:to_a)
-      Spreadsheet.new.append_rows(outcomes)
+      def spreadsheet
+        Spreadsheet.new
+      end
+
+      def new_data
+        ids = spreadsheet.ids
+        new_rows = data.reject { |r| ids.include?(r[0]) }
+        new_rows.map { |row| new(row) }
+      end
+
+      def data
+        CSV.new.data.select { |r| r['Category'] == 'digital-outcomes' }
+      end
+
+      def add_all_to_spreadsheet
+        add_to_spreadsheet(all.map(&:to_a))
+      end
+
+      def append_to_spreadsheet
+        add_to_spreadsheet(new_data.map(&:to_a))
+      end
+
+      private
+
+      def add_to_spreadsheet(outcomes)
+        spreadsheet.append_rows(outcomes)
+      end
     end
 
     def initialize(row)

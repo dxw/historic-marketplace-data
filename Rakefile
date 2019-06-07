@@ -15,4 +15,8 @@ namespace :add_opportunities do
   task :all do
     HistoricMarketplaceData::Opportunity.add_all_to_spreadsheet
   end
+
+  task :new do
+    HistoricMarketplaceData::Opportunity.append_to_spreadsheet
+  end
 end

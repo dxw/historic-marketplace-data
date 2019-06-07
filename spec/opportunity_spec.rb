@@ -83,6 +83,23 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
     end
   end
 
+  describe 'new_data' do
+    let(:opportunities) { described_class.new_data }
+    let(:spreadsheet) { double(:spreadsheet, ids: [1, 2, 3, 4]) }
+
+    before do
+      expect(described_class).to receive(:spreadsheet)
+        .at_least(1).times
+        .and_return(spreadsheet)
+      expect(described_class).to receive(:data) { [[1], [2], [3], [4], [5]] }
+    end
+
+    it 'gets all digital outcomes' do
+      expect(described_class).to receive(:new).with(row).once.with([5])
+      opportunities
+    end
+  end
+
   describe 'add_all_to_spreadsheet' do
     let(:opportunities) { Array.new(3, double(:opportunity, to_a: [])) }
     let(:writer) { double(:writer) }
@@ -96,6 +113,22 @@ RSpec.describe HistoricMarketplaceData::Opportunity do
       expect(writer).to receive(:append_rows).with(Array.new(3, []))
 
       described_class.add_all_to_spreadsheet
+    end
+  end
+
+  describe 'append_to_spreadsheet' do
+    let(:opportunities) { Array.new(3, double(:opportunity, to_a: [])) }
+    let(:writer) { double(:writer) }
+
+    before do
+      expect(described_class).to receive(:new_data) { opportunities }
+    end
+
+    it 'sends new data to spreadsheet' do
+      expect(HistoricMarketplaceData::Spreadsheet).to receive(:new) { writer }
+      expect(writer).to receive(:append_rows).with(Array.new(3, []))
+
+      described_class.append_to_spreadsheet
     end
   end
 end
