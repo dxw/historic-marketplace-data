@@ -19,4 +19,8 @@ namespace :add_opportunities do
   task :new do
     HistoricMarketplaceData::Opportunity.append_to_spreadsheet
   end
+
+  task :extract_budgets do
+    HistoricMarketplaceData::Opportunity.all_to_spreadsheet_with_budgets
+  end
 end
