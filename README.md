@@ -22,7 +22,10 @@ Create a `.env` file with the following entries:
 ```text
 GOOGLE_DRIVE_JSON_KEY={Google Drive connection details as a JSON string}
 SPREADSHEET_ID={The ID of the spreadsheet to import to}
+MARKETPLACE_CSV=https://assets.digitalmarketplace.service.gov.uk/digital-outcomes-and-specialists-4/communications/data/opportunity-data.csv
 ```
+
+Note that the value of `MARKETPLACE_CSV` will change in the future as new versions of the Digital Outcomes & Specialists framework are released
 
 ## Usage
 
